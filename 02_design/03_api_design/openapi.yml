@@ -1,0 +1,1160 @@
+openapi: 3.0.1
+info:
+  title: MoneyFamily Web API
+  description: "MoneyFamilyのAPI定義"
+  version: "1.0"
+  license:
+    name: Money Family Internal
+  contact:
+    email: wataru.tsukada47@gmail.com
+servers:
+  - url: "https://localhost:7082"
+paths:
+  # Authentication
+  /v1/auth/login:
+    post:
+      summary: "ログイン"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseModel"
+      operationId: Login
+      tags:
+        - Authentication
+  /v1/auth/reset:
+    put:
+      summary: "パスワードをリセット"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseModel"
+      operationId: PasswordReset
+      tags:
+        - Authentication
+  # Users
+  /v1/users:
+    post:
+      summary: "ユーザを登録"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseModel"
+      operationId: CreateUser
+      tags:
+        - Users
+  /v1/users/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+    get:
+      summary: "ユーザ情報を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseModel"
+      operationId: GetUserById
+      tags:
+        - Users
+    put:
+      summary: "ユーザ情報を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseModel"
+      operationId: UpdateUserById
+      tags:
+        - Users
+    delete:
+      summary: "ユーザを削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteUserById
+      tags:
+        - Users
+  /v1/users/{emailAddress}:
+    parameters:
+      - $ref: "#/components/parameters/EmailAddress"
+    get:
+      summary: "メールアドレスでユーザ情報を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseModel"
+      operationId: GetUserByEmailAddress
+      tags:
+        - Users
+
+  # Accounts
+  /v1/accounts:
+    get:
+      summary: "家計簿一覧を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountResponseModel"
+      operationId: GetAccounts
+      tags:
+        - Accounts
+    post:
+      summary: "家計簿を作成"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponseModel"
+      operationId: CreateAccount
+      tags:
+        - Accounts
+  /v1/accounts/{accountId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    get:
+      summary: "家計簿情報を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponseModel"
+      operationId: GetAccountById
+      tags:
+        - Accounts
+    put:
+      summary: "家計簿情報を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponseModel"
+      operationId: UpdateAccount
+      tags:
+        - Accounts
+    delete:
+      summary: "家計簿を削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteAccount
+      tags:
+        - Accounts
+  /v1/accounts/{accountId}/members:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    put:
+      summary: "家計簿にユーザを追加"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountMemberRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponseModel"
+      operationId: AddAccountMember
+      tags:
+        - Accounts
+  /v1/accounts/{accountId}/members/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/UserId"
+    delete:
+      summary: "家計簿からユーザを削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteAccountMember
+      tags:
+        - Accounts
+
+  # Variable Costs
+  /v1/accounts/{accountId}/variables:
+    get:
+      summary: "年/月/日を指定して変動費の一覧を取得"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+        - $ref: "#/components/parameters/Year"
+        - $ref: "#/components/parameters/Month"
+        - $ref: "#/components/parameters/Day"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VariableCostResponseModel"
+      operationId: GetVariableCosts
+      tags:
+        - Accounts:VariableCosts
+    post:
+      summary: "変動費を作成"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VariableCostRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VariableCostResponseModel"
+      operationId: CreateVariableCost
+      tags:
+        - Accounts:VariableCosts
+  /v1/accounts/{accountId}/variables/{paymentId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      summary: "変動費を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VariableCostResponseModel"
+      operationId: GetVariableCostById
+      tags:
+        - Accounts:VariableCosts
+    put:
+      summary: "変動費を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VariableCostRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VariableCostResponseModel"
+      operationId: UpdateVariableCostById
+      tags:
+        - Accounts:VariableCosts
+    delete:
+      summary: "変動費を削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteVariableCostById
+      tags:
+        - Accounts:VariableCosts
+  /v1/accounts/{accountId}/variables/budget:
+    get:
+      summary: "月次の変動費の予算と実績を取得"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+        - $ref: "#/components/parameters/Year"
+        - $ref: "#/components/parameters/Month"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetResponseModel"
+      operationId: GetMonthlyBudgetAndActual
+      tags:
+        - Accounts:VariableCosts
+    put:
+      summary: "月次の変動費の予算を作成"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetResponseModel"
+      operationId: CreateMonthlyBudget
+      tags:
+        - Accounts:VariableCosts
+  # Fixed Costs
+  /v1/accounts/{accountId}/fixes:
+    get:
+      summary: "年/月を指定して固定費の一覧を取得"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+        - $ref: "#/components/parameters/Year"
+        - $ref: "#/components/parameters/Month"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FixedCostResponseModel"
+      operationId: GetFixedCost
+      tags:
+        - Accounts:FixedCosts
+    post:
+      summary: "固定費を作成"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FixedCostRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FixedCostResponseModel"
+      operationId: CreateFixedCost
+      tags:
+        - Accounts:FixedCosts
+  /v1/accounts/{accountId}/fixes/{paymentId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      summary: "固定費を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FixedCostResponseModel"
+      operationId: GetFixedCostById
+      tags:
+        - Accounts:FixedCosts
+    put:
+      summary: "固定費を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FixedCostRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FixedCostResponseModel"
+      operationId: UpdateFixedCostById
+      tags:
+        - Accounts:FixedCosts
+    delete:
+      summary: "固定費を削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteFixedCostById
+      tags:
+        - Accounts:FixedCosts
+  # Special Costs
+  /v1/accounts/{accountId}/specials:
+    get:
+      summary: "年/月を指定して特別支出の一覧を取得"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+        - $ref: "#/components/parameters/Year"
+        - $ref: "#/components/parameters/Month"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SpecialCostResponseModel"
+      operationId: GetSpecialCosts
+      tags:
+        - Accounts:SpecialCosts
+    post:
+      summary: "特別支出を作成"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecialCostRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpecialCostResponseModel"
+      operationId: CreateSpecialCost
+      tags:
+        - Accounts:SpecialCosts
+  /v1/accounts/{accountId}/specials/{paymentId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      summary: "特別支出を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpecialCostResponseModel"
+      operationId: GetSpecialCostById
+      tags:
+        - Accounts:SpecialCosts
+    put:
+      summary: "特別支出を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecialCostRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpecialCostResponseModel"
+      operationId: UpdateSpecialCostById
+      tags:
+        - Accounts:SpecialCosts
+    delete:
+      summary: "特別支出を削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteSpecialCostById
+      tags:
+        - Accounts:SpecialCosts
+
+  # Savings
+  /v1/accounts/{accountId}/savings:
+    get:
+      summary: "年/月を指定して積立貯蓄の一覧を取得"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+        - $ref: "#/components/parameters/Year"
+        - $ref: "#/components/parameters/Month"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavingResponseModel"
+      operationId: GetSavings
+      tags:
+        - Accounts:Savings
+    post:
+      summary: "積立貯蓄を作成"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavingRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavingResponseModel"
+      operationId: CreateSaving
+      tags:
+        - Accounts:Savings
+  /v1/accounts/{accountId}/savings/{paymentId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      summary: "積立貯蓄を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavingResponseModel"
+      operationId: GetSavingById
+      tags:
+        - Accounts:Savings
+    put:
+      summary: "積立貯蓄を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavingRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavingResponseModel"
+      operationId: UpdateSavingById
+      tags:
+        - Accounts:Savings
+    delete:
+      summary: "積立貯蓄を削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteSavingById
+      tags:
+        - Accounts:Savings
+
+  # Incomes
+  /v1/accounts/{accountId}/incomes:
+    get:
+      summary: "年/月を指定して収入の一覧を取得"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+        - $ref: "#/components/parameters/Year"
+        - $ref: "#/components/parameters/Month"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IncomeResponseModel"
+      operationId: GetIncomes
+      tags:
+        - Accounts:Incomes
+    post:
+      summary: "収入を作成"
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncomeRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncomeResponseModel"
+      operationId: CreateIncome
+      tags:
+        - Accounts:Incomes
+  /v1/accounts/{accountId}/incomes/{paymentId}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      summary: "収入を取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncomeResponseModel"
+      operationId: GetIncomeById
+      tags:
+        - Accounts:Incomes
+    put:
+      summary: "収入を更新"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncomeRequestModel"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncomeResponseModel"
+      operationId: UpdateIncomeById
+      tags:
+        - Accounts:Incomes
+    delete:
+      summary: "収入を削除"
+      responses:
+        "204":
+          description: No Content
+      operationId: DeleteIncomeById
+      tags:
+        - Accounts:Incomes
+
+  # Operation
+  /v1/categories:
+    get:
+      summary: "カテゴリマスタを取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryResponseModel"
+      operationId: GetCategories
+      tags:
+        - Operation
+  /v1/sources:
+    get:
+      summary: "支出元マスタを取得"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SourceResponseModel"
+      operationId: GetCategory
+      tags:
+        - Operation
+
+components:
+  schemas:
+    # schemas for parameter
+    UserId:
+      type: string
+      format: uuid
+    EmailAddress:
+      type: string
+      format: email
+    AccountId:
+      type: string
+      format: uuid
+    PaymentId:
+      type: string
+      format: uuid
+
+    # schemas for request and response
+    # Authentication
+    LoginRequestModel:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+      required:
+        - email
+        - password
+    LoginResponseModel:
+      type: object
+      properties:
+        token:
+          type: string
+
+    # Users
+    UserRequestModel:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    UserResponseModel:
+      properties:
+        id:
+          $ref: "#/components/schemas/UserId"
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+
+    # Accounts
+    AccountRequestModel:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    AccountResponseModel:
+      properties:
+        id:
+          $ref: "#/components/schemas/AccountId"
+        name:
+          type: string
+        createUserId:
+          $ref: "#/components/schemas/UserId"
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserId"
+    AccountMemberRequestModel:
+      type: object
+      properties:
+        userId:
+          $ref: "#/components/schemas/UserId"
+
+    # Variable Costs
+    VariableCostRequestModel:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        content:
+          type: string
+        categoryId:
+          type: string
+        categoryDatailId:
+          type: string
+        amount:
+          type: string
+        sourceId:
+          type: string
+        sourceDetailId:
+          type: string
+        costdatail:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValiableCostDatailModel"
+      required:
+        - date
+        - categoryId
+        - amount
+    VariableCostResponseModel:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/PaymentId"
+        date:
+          type: string
+          format: date
+        dayOfWeek:
+          type: integer
+        weekOfYear:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        categoryDatailId:
+          type: string
+        amount:
+          type: string
+        sourceId:
+          type: string
+        sourceDetailId:
+          type: string
+        costdatail:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValiableCostDatailModel"
+    ValiableCostDatailModel:
+      type: object
+      properties:
+        content:
+          type: string
+        amount:
+          type: string
+    BudgetRequestModel:
+      type: object
+      properties:
+        year:
+          type: integer
+        month:
+          type: integer
+        categoryId:
+          type: string
+        budgetAmount:
+          type: string
+      required:
+        - year
+        - month
+        - categoryId
+        - budgetAmount
+    BudgetResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        categoryId:
+          type: string
+        budgetAmount:
+          type: string
+        actualAmount:
+          type: string
+        variance:
+          type: string
+
+    # Fixed Costs
+    FixedCostRequestModel:
+      type: object
+      properties:
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+    FixedCostResponseModel:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/PaymentId"
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+
+    # Special Costs
+    SpecialCostRequestModel:
+      type: object
+      properties:
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+    SpecialCostResponseModel:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/PaymentId"
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+
+    # Savings
+    SavingRequestModel:
+      type: object
+      properties:
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+    SavingResponseModel:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/PaymentId"
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+
+    # Incomes
+    IncomeRequestModel:
+      type: object
+      properties:
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+    IncomeResponseModel:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/PaymentId"
+        year:
+          type: integer
+        month:
+          type: integer
+        content:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+      required:
+        - year
+        - month
+        - categorId
+        - amount
+
+    # Operation
+    CategoryResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              detailId:
+                type: string
+              detailName:
+                type: string
+    SourceResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+  parameters:
+    UserId:
+      description: "ユーザID"
+      name: userId
+      in: path
+      schema:
+        $ref: "#/components/schemas/UserId"
+      required: true
+    EmailAddress:
+      description: "メールアドレス"
+      name: emailAddress
+      in: path
+      schema:
+        $ref: "#/components/schemas/EmailAddress"
+      required: true
+    AccountId:
+      description: "家計簿ID"
+      name: accountId
+      in: path
+      schema:
+        $ref: "#/components/schemas/AccountId"
+      required: true
+    PaymentId:
+      description: "明細ID"
+      name: paymentId
+      in: path
+      schema:
+        $ref: "#/components/schemas/PaymentId"
+      required: true
+    Year:
+      description: "年(YYYY)"
+      name: year
+      in: query
+      schema:
+        type: integer
+      required: true
+    Month:
+      description: "月(MM)"
+      name: month
+      in: query
+      schema:
+        type: integer
+      required: true
+    Day:
+      description: "日(DD)"
+      name: day
+      in: query
+      schema:
+        type: integer
+
+  securitySchemes:
+    Bearer:
+      type: http
+      description: JWT Authorization header using the Bearer scheme.
+      scheme: bearer
+      bearerFormat: JWT
+
+tags:
+  - name: Authentication
+  - name: Users
+  - name: Accounts
+  - name: Accounts:VariableCosts
+  - name: Accounts:FixedCosts
+  - name: Accounts:SpecialCosts
+  - name: Accounts:Savings
+  - name: Accounts:Incomes
+  - name: Operation
+
+x-tagGroups:
+  - name: Accounts
+  - Accounts:VariableCosts
+  - Accounts:FixedCosts
+  - Accounts:SpecialCosts
+  - Accounts:Savings
+  - Accounts:Incomes
+
+security:
+  - Bearer: []
