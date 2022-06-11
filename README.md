@@ -11,14 +11,5 @@
 ## 設計
 - [ドメインモデル図](02_design/01_domain_model_design/domain_model_design.png)
 - [画面設計](02_design/02_screen_design/screen_design.md)
-
-## 外部設計
-- 概念モデル
-- 画面設計
-- DB論理設計
-
-## 内部設計
-- ドメインモデル
-- クラス図
-- DB物理設計
-- アーキテクチャ設計
+- [API定義](02_design/03_api_design/openapi.yml)
+- [DB設計](02_design/04_database_design/er_design.pdf)

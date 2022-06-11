@@ -30,6 +30,25 @@ paths:
       operationId: Login
       tags:
         - Authentication
+  /v1/auth/register:
+    post:
+      summary: "ユーザを登録"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseModel"
+      operationId: CreateUser
+      tags:
+        - Authentication
   /v1/auth/reset:
     put:
       summary: "パスワードをリセット"
@@ -49,26 +68,8 @@ paths:
       operationId: PasswordReset
       tags:
         - Authentication
+
   # Users
-  /v1/users:
-    post:
-      summary: "ユーザを登録"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserRequestModel"
-        required: true
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserResponseModel"
-      operationId: CreateUser
-      tags:
-        - Users
   /v1/users/{userId}:
     parameters:
       - $ref: "#/components/parameters/UserId"
@@ -255,7 +256,7 @@ paths:
                   $ref: "#/components/schemas/VariableCostResponseModel"
       operationId: GetVariableCosts
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
     post:
       summary: "変動費を作成"
       parameters:
@@ -275,7 +276,7 @@ paths:
                 $ref: "#/components/schemas/VariableCostResponseModel"
       operationId: CreateVariableCost
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
   /v1/accounts/{accountId}/variables/{paymentId}:
     parameters:
       - $ref: "#/components/parameters/AccountId"
@@ -291,7 +292,7 @@ paths:
                 $ref: "#/components/schemas/VariableCostResponseModel"
       operationId: GetVariableCostById
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
     put:
       summary: "変動費を更新"
       requestBody:
@@ -309,7 +310,7 @@ paths:
                 $ref: "#/components/schemas/VariableCostResponseModel"
       operationId: UpdateVariableCostById
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
     delete:
       summary: "変動費を削除"
       responses:
@@ -317,7 +318,7 @@ paths:
           description: No Content
       operationId: DeleteVariableCostById
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
   /v1/accounts/{accountId}/variables/budget:
     get:
       summary: "月次の変動費の予算と実績を取得"
@@ -336,7 +337,7 @@ paths:
                   $ref: "#/components/schemas/BudgetResponseModel"
       operationId: GetMonthlyBudgetAndActual
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
     put:
       summary: "月次の変動費の予算を作成"
       parameters:
@@ -356,7 +357,7 @@ paths:
                 $ref: "#/components/schemas/BudgetResponseModel"
       operationId: CreateMonthlyBudget
       tags:
-        - Accounts:VariableCosts
+        - VariableCosts
   # Fixed Costs
   /v1/accounts/{accountId}/fixes:
     get:
@@ -376,7 +377,7 @@ paths:
                   $ref: "#/components/schemas/FixedCostResponseModel"
       operationId: GetFixedCost
       tags:
-        - Accounts:FixedCosts
+        - FixedCosts
     post:
       summary: "固定費を作成"
       parameters:
@@ -396,7 +397,7 @@ paths:
                 $ref: "#/components/schemas/FixedCostResponseModel"
       operationId: CreateFixedCost
       tags:
-        - Accounts:FixedCosts
+        - FixedCosts
   /v1/accounts/{accountId}/fixes/{paymentId}:
     parameters:
       - $ref: "#/components/parameters/AccountId"
@@ -412,7 +413,7 @@ paths:
                 $ref: "#/components/schemas/FixedCostResponseModel"
       operationId: GetFixedCostById
       tags:
-        - Accounts:FixedCosts
+        - FixedCosts
     put:
       summary: "固定費を更新"
       requestBody:
@@ -430,7 +431,7 @@ paths:
                 $ref: "#/components/schemas/FixedCostResponseModel"
       operationId: UpdateFixedCostById
       tags:
-        - Accounts:FixedCosts
+        - FixedCosts
     delete:
       summary: "固定費を削除"
       responses:
@@ -438,7 +439,7 @@ paths:
           description: No Content
       operationId: DeleteFixedCostById
       tags:
-        - Accounts:FixedCosts
+        - FixedCosts
   # Special Costs
   /v1/accounts/{accountId}/specials:
     get:
@@ -458,7 +459,7 @@ paths:
                   $ref: "#/components/schemas/SpecialCostResponseModel"
       operationId: GetSpecialCosts
       tags:
-        - Accounts:SpecialCosts
+        - SpecialCosts
     post:
       summary: "特別支出を作成"
       parameters:
@@ -478,7 +479,7 @@ paths:
                 $ref: "#/components/schemas/SpecialCostResponseModel"
       operationId: CreateSpecialCost
       tags:
-        - Accounts:SpecialCosts
+        - SpecialCosts
   /v1/accounts/{accountId}/specials/{paymentId}:
     parameters:
       - $ref: "#/components/parameters/AccountId"
@@ -494,7 +495,7 @@ paths:
                 $ref: "#/components/schemas/SpecialCostResponseModel"
       operationId: GetSpecialCostById
       tags:
-        - Accounts:SpecialCosts
+        - SpecialCosts
     put:
       summary: "特別支出を更新"
       requestBody:
@@ -512,7 +513,7 @@ paths:
                 $ref: "#/components/schemas/SpecialCostResponseModel"
       operationId: UpdateSpecialCostById
       tags:
-        - Accounts:SpecialCosts
+        - SpecialCosts
     delete:
       summary: "特別支出を削除"
       responses:
@@ -520,7 +521,7 @@ paths:
           description: No Content
       operationId: DeleteSpecialCostById
       tags:
-        - Accounts:SpecialCosts
+        - SpecialCosts
 
   # Savings
   /v1/accounts/{accountId}/savings:
@@ -541,7 +542,7 @@ paths:
                   $ref: "#/components/schemas/SavingResponseModel"
       operationId: GetSavings
       tags:
-        - Accounts:Savings
+        - Savings
     post:
       summary: "積立貯蓄を作成"
       parameters:
@@ -561,7 +562,7 @@ paths:
                 $ref: "#/components/schemas/SavingResponseModel"
       operationId: CreateSaving
       tags:
-        - Accounts:Savings
+        - Savings
   /v1/accounts/{accountId}/savings/{paymentId}:
     parameters:
       - $ref: "#/components/parameters/AccountId"
@@ -577,7 +578,7 @@ paths:
                 $ref: "#/components/schemas/SavingResponseModel"
       operationId: GetSavingById
       tags:
-        - Accounts:Savings
+        - Savings
     put:
       summary: "積立貯蓄を更新"
       requestBody:
@@ -595,7 +596,7 @@ paths:
                 $ref: "#/components/schemas/SavingResponseModel"
       operationId: UpdateSavingById
       tags:
-        - Accounts:Savings
+        - Savings
     delete:
       summary: "積立貯蓄を削除"
       responses:
@@ -603,7 +604,7 @@ paths:
           description: No Content
       operationId: DeleteSavingById
       tags:
-        - Accounts:Savings
+        - Savings
 
   # Incomes
   /v1/accounts/{accountId}/incomes:
@@ -624,7 +625,7 @@ paths:
                   $ref: "#/components/schemas/IncomeResponseModel"
       operationId: GetIncomes
       tags:
-        - Accounts:Incomes
+        - Incomes
     post:
       summary: "収入を作成"
       parameters:
@@ -644,7 +645,7 @@ paths:
                 $ref: "#/components/schemas/IncomeResponseModel"
       operationId: CreateIncome
       tags:
-        - Accounts:Incomes
+        - Incomes
   /v1/accounts/{accountId}/incomes/{paymentId}:
     parameters:
       - $ref: "#/components/parameters/AccountId"
@@ -660,7 +661,7 @@ paths:
                 $ref: "#/components/schemas/IncomeResponseModel"
       operationId: GetIncomeById
       tags:
-        - Accounts:Incomes
+        - Incomes
     put:
       summary: "収入を更新"
       requestBody:
@@ -678,7 +679,7 @@ paths:
                 $ref: "#/components/schemas/IncomeResponseModel"
       operationId: UpdateIncomeById
       tags:
-        - Accounts:Incomes
+        - Incomes
     delete:
       summary: "収入を削除"
       responses:
@@ -686,7 +687,7 @@ paths:
           description: No Content
       operationId: DeleteIncomeById
       tags:
-        - Accounts:Incomes
+        - Incomes
 
   # Operation
   /v1/categories:
@@ -1141,20 +1142,12 @@ tags:
   - name: Authentication
   - name: Users
   - name: Accounts
-  - name: Accounts:VariableCosts
-  - name: Accounts:FixedCosts
-  - name: Accounts:SpecialCosts
-  - name: Accounts:Savings
-  - name: Accounts:Incomes
+  - name: VariableCosts
+  - name: FixedCosts
+  - name: SpecialCosts
+  - name: Savings
+  - name: Incomes
   - name: Operation
-
-x-tagGroups:
-  - name: Accounts
-  - Accounts:VariableCosts
-  - Accounts:FixedCosts
-  - Accounts:SpecialCosts
-  - Accounts:Savings
-  - Accounts:Incomes
 
 security:
   - Bearer: []
