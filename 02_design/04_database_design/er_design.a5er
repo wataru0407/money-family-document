@@ -40,7 +40,7 @@ ShowCommonAttributes=0
 BugFixEntityWidth=1
 
 [Entity]
-PName=USER
+PName=USERS
 LName=ユーザ
 Comment=
 TableOption=
@@ -55,7 +55,7 @@ Index==2,EMAL_ADDRESS
 EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
-ModifiedDateTime=20220610183129
+ModifiedDateTime=20220611181638
 Position="MAIN",200,300,146,128
 ZOrder=1
 
@@ -95,7 +95,7 @@ Position="MAIN",500,350,162,51
 ZOrder=3
 
 [Relation]
-Entity1=USER
+Entity1=USERS
 Entity2=USER_ACCOUNT_RELATION
 RelationType1=2
 RelationType2=3
